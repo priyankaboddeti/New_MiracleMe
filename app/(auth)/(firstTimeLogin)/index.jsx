@@ -5,23 +5,24 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Text,
+  Alert,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { PaperProvider } from "react-native-paper";
 import Buildings from "../../../assets/images/Buildings";
 import MiracleLogo from "../../../assets/images/MiracleLogo";
 import InputField from "../../../components/InputField";
 import signInStrings from "../../../constants/SignInStrings";
 import WarningDialog from "../../../components/WarningDialog";
-import styles from "../../../styles/signInStyles";
+import styles from "../../../styles/auth/firstTimeLogin.js/signInStyles";
 import { signIn } from "../../../services/redux/features/auth-slice";
 import { useDispatch } from "react-redux";
 import {useHubbleLoginMutation} from '../../../services/apiService'
-import jwt_decode from "jwt-decode";
-
+import * as SecureStore from 'expo-secure-store';
+import { useRouter } from "expo-router";
 
 export default function SignIn() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [hubbleLogin, { isLoading,error, data }] = useHubbleLoginMutation();
   const windowHeight = useWindowDimensions().height;
 
@@ -41,34 +42,37 @@ export default function SignIn() {
     }
 
     try {
-      const response = await hubbleLogin(credentials).unwrap(); // Call API
-      console.log(response,"res")
-      const userDetails=jwt_decode(response.token)
-      console.log(userDetails,"userDetails")
-      if (response.success==true) {
-        // Save the token securely
-        await SecureStore.setItemAsync("authToken", response.token);
-        
-        // Dispatch action to save token in Redux state
-        dispatch(signIn(response.token));
+      console.log("🟡 Calling API...");
+      const response = await hubbleLogin(credentials).unwrap();
+      
+      console.log("🟢 Final Response After Transform:", response.decodedToken); // Check transformed response
+  
+      if (response.success) {
+          console.log("🔐 Storing token...");
+          await SecureStore.setItemAsync("tokenData", JSON.stringify(response.decodedToken));
+          
+          console.log("🚀 Dispatching to Redux...");
+          dispatch(signIn(response.decodedToken));
+  
+          Alert.alert(response.message);
 
-        Alert.alert("Success", "Login successful!");
-        // Navigate to next screen if needed
+          router.push('/passcodeSetup');
+
+
       } else {
-        Alert.alert("Error", "Invalid credentials");
+          console.warn("⛔ Login failed, invalid credentials.");
+          Alert.alert("Error", "Invalid credentials");
       }
-    } catch (err) {
+  } catch (err) {
+      console.error("❌ API Call Failed:", err);
       Alert.alert("Login Failed", err?.data || "Something went wrong!");
-    }
+  }
+  
   };
 
   return (
-    <PaperProvider>
-      <SafeAreaProvider>
-        <SafeAreaView
-          style={styles.safeArea}
-          edges={["left", "right", "top", "bottom"]}
-        >
+
+    
           <KeyboardAvoidingView
             behavior="height"
             style={[styles.container, { minHeight: windowHeight }]}
@@ -110,8 +114,7 @@ export default function SignIn() {
               onDismiss={() => setModalVisible(false)}
             />
           </KeyboardAvoidingView>
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </PaperProvider>
+       
+
   );
 }

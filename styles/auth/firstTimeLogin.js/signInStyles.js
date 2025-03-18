@@ -1,14 +1,12 @@
 import { StyleSheet } from "react-native";
+import {Colors,colors} from "../../../constants/Colors"
 
 export default StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: colors.whiteClr,
   },
   logoContainer: {
     flex: 0.5,
@@ -23,7 +21,7 @@ export default StyleSheet.create({
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#00AAE3",
+    backgroundColor:colors.blueClr,
     borderRadius: 50,
     width: "80%",
     paddingHorizontal: 20,
@@ -42,7 +40,7 @@ export default StyleSheet.create({
   },
   signInButton: {
     width: "30%",
-    backgroundColor: "#0D416B",
+    backgroundColor: colors.navyBlueClr,
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
@@ -58,10 +56,10 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: colors.whiteClr,
   },
   dialogContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.whiteClr,
     borderRadius: 12,
     padding: 15,
     elevation: 5,
@@ -82,7 +80,7 @@ export default StyleSheet.create({
     color: "#333",
   },
   tryAgainButton: {
-    backgroundColor: "#0D416B",
+    backgroundColor:colors.navyBlueClr,
     borderRadius: 8,
     paddingHorizontal: 15,
     paddingVertical: 5,

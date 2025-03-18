@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import styles from "../styles/signInStyles";
+import styles from "../styles/auth/firstTimeLogin.js/signInStyles";
 
 /**
  * Reusable InputField Component
