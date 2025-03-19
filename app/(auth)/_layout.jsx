@@ -1,21 +1,24 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import * as SecureStore from "expo-secure-store";
 import { signIn } from "../../services/redux/features/auth-slice";
+import { useEffect, useState } from "react";
 
 export default function AuthLayout() {
   const dispatch = useDispatch();
-  // const token = useSelector((state) => state.auth.token);
+  const router = useRouter();
+  const [isFirstTime, setIsFirstTime] = useState(true); // Default to first time, adjust logic
 
-  // useEffect(() => {
-  //   const loadToken = async () => {
-  //     const token = await SecureStore.getItemAsync("token");
-  //     if (token) {
-  //       dispatch(signIn(token)); // Restore session if token exists
-  //     }
-  //   };
-  //   loadToken();
-  // }, []);
+  useEffect(() => {
+    const loadToken = async () => {
+      const token = await SecureStore.getItemAsync("token");
+      if (token) {
+        dispatch(signIn(token));
+        setIsFirstTime(false); // Token exists, not first time
+      }
+    };
+    loadToken();
+  }, [dispatch]);
 
   return (
     <Stack
@@ -29,7 +32,7 @@ export default function AuthLayout() {
         },
       }}
     >
-      {true ? (
+      {isFirstTime ? (
         <Stack.Screen
           name="(firstTimeLogin)"
           options={{ headerShown: false }}

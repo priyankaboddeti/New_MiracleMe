@@ -7,10 +7,11 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "../services/redux/store";
 import { PaperProvider } from "react-native-paper";
+import Toast, { ToastProvider } from "../utils/ToastContext";
 
 import "react-native-reanimated";
 
@@ -28,6 +29,24 @@ export default function RootLayout() {
     MontserratSemiBold: require("../assets/fonts/Montserrat-SemiBold.ttf"),
     MontserratBold: require("../assets/fonts/Montserrat-Bold.ttf"),
   });
+
+  // Toast configuaration
+  // const [toastVisible, setToastVisible] = useState(false);
+  // const [toastMessage, setToastMessage] = useState("");
+  // const [toastType, setToastType] = useState("success");
+
+  // const showToast = (message, type) => {
+  //   setToastMessage(message);
+  //   setToastType(type);
+  //   setToastVisible(true);
+  // };
+
+  // const hideToast = () => {
+  //   setToastVisible(false);
+  // };
+
+  // // Making showToast globally available (optional, but often helpful)
+  // global.showToast = showToast;
 
   useEffect(() => {
     if (loaded) {
@@ -48,13 +67,15 @@ export default function RootLayout() {
             edges={["left", "right", "top", "bottom"]}
           >
             {/* <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> */}
-            <Stack>
-              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-              {/* <Stack.Screen name="+not-found" /> */}
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            </Stack>
-            <StatusBar style="auto" />
-            {/* </ThemeProvider> */}
+            <ToastProvider>
+              <Stack>
+                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+                {/* <Stack.Screen name="+not-found" /> */}
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              </Stack>
+              <StatusBar style="auto" />
+              {/* </ThemeProvider> */}
+            </ToastProvider>
           </SafeAreaView>
         </SafeAreaProvider>
       </PaperProvider>

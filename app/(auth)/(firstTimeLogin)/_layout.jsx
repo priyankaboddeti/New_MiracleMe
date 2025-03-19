@@ -1,6 +1,7 @@
-import { router, Stack } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { router, Stack } from "expo-router";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { colors } from "../../../constants/Colors";
 
 export default function AuthLayout() {
   const isSignin = useSelector((state) => state.auth.isSignin);
@@ -11,8 +12,8 @@ export default function AuthLayout() {
   }, []);
 
   useEffect(() => {
-    if (isMounted && isSignin && router.pathname !== '/passcodeSetup') {
-      router.replace('/passcodeSetup');
+    if (isMounted && isSignin && router.pathname !== "/passcodeSetup") {
+      router.replace("/passcodeSetup");
     }
   }, [isMounted, isSignin]);
 
@@ -20,16 +21,19 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: colors.blueClr,
         },
-        headerTintColor: '#fff',
+        headerTintColor: "#fff",
         headerTitleStyle: {
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
-        headerShown:false
-      }}>
-        <Stack.Screen name="index" />
-      {isSignin && <Stack.Screen name="passcodeSetup"  />}
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="index" />
+      {isSignin && (
+        <Stack.Screen options={{ headerShown: false }} name="passcodeSetup" />
+      )}
       {/* <Stack.Screen name="fingerprintSetup" /> */}
     </Stack>
   );
