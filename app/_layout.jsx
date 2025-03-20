@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "../services/redux/store";
 import { PaperProvider } from "react-native-paper";
-import Toast, { ToastProvider } from "../utils/ToastContext";
+import Toast, { ToastProvider } from "../utils/Toast/ToastContext";
 
 import "react-native-reanimated";
 

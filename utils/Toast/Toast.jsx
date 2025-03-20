@@ -1,6 +1,7 @@
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useEffect } from "react";
-import { Animated, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // Import Ionicons
+import { useEffect, useState } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 
 const Toast = ({ message, type, visible, onHide }) => {
   const [fadeAnim] = useState(new Animated.Value(0)); // Initial opacity 0
@@ -34,7 +35,7 @@ const Toast = ({ message, type, visible, onHide }) => {
       case "success":
         return "#4CAF50";
       case "error":
-        return "red";
+        return "#F44336";
       case "warning":
         return "#FF9800";
       default:
@@ -45,13 +46,31 @@ const Toast = ({ message, type, visible, onHide }) => {
   const iconName = () => {
     switch (type) {
       case "success":
-        return "check-circle";
+        return "check-circle"; // FontAwesome5
       case "error":
-        return "alert-circle";
+        return "alert-circle"; // Ionicons
       case "warning":
-        return "alert-triangle";
+        return "exclamation-triangle"; // FontAwesome5
       default:
-        return "info-circle";
+        return "info-circle"; // FontAwesome5
+    }
+  };
+
+  const IconComponent = () => {
+    const name = iconName();
+    if (type === "error") {
+      return (
+        <Ionicons name={name} size={24} color="#fff" style={styles.toastIcon} />
+      );
+    } else {
+      return (
+        <FontAwesome5
+          name={name}
+          size={24}
+          color="#fff"
+          style={styles.toastIcon}
+        />
+      );
     }
   };
 
@@ -67,12 +86,7 @@ const Toast = ({ message, type, visible, onHide }) => {
       ]}
     >
       <View style={styles.toastContent}>
-        <FontAwesome5
-          name={iconName()}
-          size={24}
-          color="#fff"
-          style={styles.toastIcon}
-        />
+        <IconComponent />
         <Text style={styles.toastText}>{message}</Text>
       </View>
     </Animated.View>
@@ -99,6 +113,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   toastText: {
+    fontFamily: "MontserratSemiBold",
     color: "#fff",
     fontSize: 16,
     marginLeft: 10,

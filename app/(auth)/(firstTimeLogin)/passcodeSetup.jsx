@@ -5,7 +5,8 @@ import MiracleLogo from "../../../assets/images/MiracleLogo";
 import { colors } from "../../../constants/Colors";
 import * as Haptics from "expo-haptics";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useToast } from "../../../utils/ToastContext";
+import { useToast } from "../../../utils/Toast/ToastContext";
+import { useRouter } from "expo-router";
 
 export default function PasscodeSetup() {
   const [pin, setPin] = useState("");
@@ -16,6 +17,7 @@ export default function PasscodeSetup() {
   const [visibleConfirmPin, setVisibleConfirmPin] = useState([]);
   const timeoutRef = useRef(null);
   const { showToast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     return () => {
@@ -108,9 +110,12 @@ export default function PasscodeSetup() {
         //compare only when confirmPin is complete.
         if (pin !== confirmPin + number) {
           //compare pin to the confirmPin as it is being built.
-          showToast("Pins do not match.", "error");
+          showToast("Pin do not match.", "error");
           setConfirmPin(""); //reset confirm pin
           setVisibleConfirmPin([]); //reset visible confirm pin.
+        } else {
+          // Pins match!
+          showToast("Pin match!", "success");
         }
       }
     }
@@ -145,18 +150,7 @@ export default function PasscodeSetup() {
             if (number === "←") {
               handleBackspacePress();
             } else if (number === "✓") {
-              if (pin.length === 4 && confirmPin.length === 4) {
-                if (pin === confirmPin) {
-                  console.log("Pins match!");
-                  showToast("Pins match!", "success");
-                  // Navigate or perform other actions
-                } else {
-                  console.log("Pins do not match.");
-                  showToast("Pins do not match.", "error");
-                }
-              } else {
-                showToast("Pins must be 4 digits.", "error");
-              }
+              router.push("/fingerprintSetup");
             } else if (number !== "") {
               handleNumberPress(number);
             }

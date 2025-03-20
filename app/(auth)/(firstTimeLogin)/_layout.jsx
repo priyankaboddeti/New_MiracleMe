@@ -1,21 +1,21 @@
 import { router, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { colors } from "../../../constants/Colors";
 
 export default function AuthLayout() {
   const isSignin = useSelector((state) => state.auth.isSignin);
-  const [isMounted, setIsMounted] = useState(false);
+  const isFingerprintEnabled = useSelector(
+    (state) => state.auth.isFingerprintEnabled
+  );
 
   useEffect(() => {
-    setIsMounted(true); // Ensure the component has mounted
-  }, []);
-
-  useEffect(() => {
-    if (isMounted && isSignin && router.pathname !== "/passcodeSetup") {
+    if (isFingerprintEnabled && router.pathname !== "/fingerprintSetup") {
+      router.replace("/fingerprintSetup");
+    } else if (isSignin && router.pathname !== "/passcodeSetup") {
       router.replace("/passcodeSetup");
     }
-  }, [isMounted, isSignin]);
+  }, [isSignin, isFingerprintEnabled, router]);
 
   return (
     <Stack
@@ -31,10 +31,18 @@ export default function AuthLayout() {
       }}
     >
       <Stack.Screen name="index" />
-      {isSignin && (
-        <Stack.Screen options={{ headerShown: false }} name="passcodeSetup" />
-      )}
-      {/* <Stack.Screen name="fingerprintSetup" /> */}
+      <Stack.Screen
+        name="passcodeSetup"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="fingerprintSetup"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }
