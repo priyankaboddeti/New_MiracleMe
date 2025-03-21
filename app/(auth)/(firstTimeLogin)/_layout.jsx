@@ -9,13 +9,13 @@ export default function AuthLayout() {
     (state) => state.auth.isFingerprintEnabled
   );
 
-  useEffect(() => {
-    if (isFingerprintEnabled && router.pathname !== "/fingerprintSetup") {
-      router.replace("/fingerprintSetup");
-    } else if (isSignin && router.pathname !== "/passcodeSetup") {
-      router.replace("/passcodeSetup");
-    }
-  }, [isSignin, isFingerprintEnabled, router]);
+  // useEffect(() => {
+  //   if (isFingerprintEnabled && router.pathname !== "/fingerprintSetup") {
+  //     router.replace("/fingerprintSetup");
+  //   } else if (isSignin && router.pathname !== "/passcodeSetup") {
+  //     router.replace("/passcodeSetup");
+  //   }
+  // }, [isSignin, isFingerprintEnabled, router]);
 
   return (
     <Stack

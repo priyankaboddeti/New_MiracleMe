@@ -35,6 +35,7 @@ export default function FingerprintSetup() {
     if (success) {
       console.log(isFingerprintAuthEnabled, "isFingerprintAuthEnabled");
       console.log("Fingerprint authentication successful!");
+      router.replace("/(dashboard)");
       // Navigate to the next screen or perform other actions
     } else {
       console.log("Fingerprint authentication failed.");
@@ -44,7 +45,7 @@ export default function FingerprintSetup() {
   };
 
   const handleSkip = () => {
-    router.push("/Dashboard");
+    router.push("/(dashboard)");
     // Navigate to the next screen without enabling fingerprint auth
   };
 
