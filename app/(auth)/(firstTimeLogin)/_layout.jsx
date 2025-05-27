@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { colors } from "../../../constants/Colors";
 
 export default function AuthLayout() {
-  const isSignin = useSelector((state) => state.auth.isSignin);
+  const isSignIn = useSelector((state) => state.auth.isSignIn);
   const isFingerprintEnabled = useSelector(
     (state) => state.auth.isFingerprintEnabled
   );

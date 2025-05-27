@@ -13,8 +13,8 @@ export default function AuthLayout() {
         },
       }}
     >
-      <Stack.Screen name="passcodeLogin" />
-      <Stack.Screen name="FingerprintLogin" />
+      <Stack.Screen name="passcodeLogin" options={{ headerShown: false }} />
+      <Stack.Screen name="fingerprintLogin" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -16,9 +16,10 @@ import WarningDialog from "../../../components/WarningDialog";
 import styles from "../../../styles/auth/firstTimeLogin.js/signInStyles";
 import { signIn } from "../../../services/redux/features/auth-slice";
 import { useDispatch } from "react-redux";
-import { useHubbleLoginMutation } from "../../../services/apiService";
+import { useHubbleLoginMutation } from "../../../services/hubbleApi";
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
+import { encryptString, decryptString } from "../../../utils/encryption";
 
 export default function SignIn() {
   const dispatch = useDispatch();
@@ -35,6 +36,37 @@ export default function SignIn() {
   const handleInputChange = (field, value) =>
     setCredentials((prev) => ({ ...prev, [field]: value }));
 
+  // Alternative payload formats to try if the first one doesn't work
+  // const tryAlternativeFormats = async () => {
+  //   const apiUrl = "https://dev-hubble-api.miraclesoft.com/hubble-v4/";
+  //   const apiKey = "123456$#@$^@1ERF";
+  //   const endpoint = "employees/login";
+
+  //   for (const format of payloadFormats) {
+  //     console.log(`📦 Trying ${format.name} format`);
+  //     console.log(`📦 Payload:`, format.data);
+
+  //     try {
+  //       const response = await hubbleLogin(credentials).unwrap();
+
+  //       console.log(`🔹 ${format.name} response status:`, response.status);
+
+  //       const responseText = await response.text();
+  //       console.log(`🔹 ${format.name} raw response:`, responseText);
+
+  //       if (response.ok) {
+  //         console.log(`✅ ${format.name} login successful!`);
+  //         return { success: true, responseText };
+  //       }
+  //     } catch (error) {
+  //       console.error(`❌ ${format.name} fetch error:`, error);
+  //     }
+  //   }
+
+  //   return { success: false };
+  // };
+
+  // Update handleLogin to try alternative formats if the first attempt fails
   const handleLogin = async () => {
     if (!credentials.username || !credentials.password) {
       Alert.alert("Error", "Please enter username and password");
@@ -42,23 +74,29 @@ export default function SignIn() {
     }
 
     try {
-      console.log("🟡 Calling API...");
+      console.log("🟡 Calling API...", credentials);
       const response = await hubbleLogin(credentials).unwrap();
 
-      console.log("🟢 Final Response After Transform:", response); // Check transformed response
+      console.log("🟢 Final Response After Transform:", response);
+      const jwtToken = response.token;
+      const decodedJwtToken = response.decodedToken;
+
+      console.log(jwtToken, "Encrypted Token pass to all API's");
 
       if (response.success) {
+        console.log("✅ Login successful!", response);
         console.log("🔐 Storing token...");
+        processSuccessfulLogin(response);
+        // Save credentials for future token refreshes (securely)
         await SecureStore.setItemAsync(
-          "tokenData",
-          JSON.stringify(response.decodedToken)
+          "userCredentials",
+          JSON.stringify(credentials)
         );
 
         console.log("🚀 Dispatching to Redux...");
-        dispatch(signIn(response.decodedToken));
+        dispatch(signIn({ jwtToken, decodedJwtToken }));
 
         Alert.alert(response.message);
-
         router.push("/passcodeSetup");
       } else {
         console.warn("⛔ Login failed, invalid credentials.");
@@ -69,6 +107,57 @@ export default function SignIn() {
       Alert.alert("Login Failed", err?.data || "Something went wrong!");
     }
   };
+
+  // Helper function to process successful login
+  const processSuccessfulLogin = async (responseText) => {
+    console.log(typeof responseText, "responseText");
+    try {
+      const responseData = JSON.parse(responseText);
+      console.log(typeof responseData);
+
+      if (responseData.token) {
+        const jwtToken = responseData.token;
+        const decodedJwtToken = decodeJwt(jwtToken);
+
+        // Save credentials for future token refreshes
+        await SecureStore.setItemAsync(
+          "userCredentials",
+          JSON.stringify(credentials)
+        );
+
+        // Dispatch to Redux
+        dispatch(signIn({ jwtToken, decodedJwtToken }));
+
+        Alert.alert("Success", "Login successful");
+        router.push("/passcodeSetup");
+      } else {
+        console.log("No token found in response:", responseData);
+        Alert.alert(
+          "Login Error",
+          "Authentication successful but no token received"
+        );
+      }
+    } catch (parseError) {
+      console.error("❌ Parse error:", parseError);
+      Alert.alert("Error", "Failed to process response");
+    }
+  };
+
+  // Helper function to decode JWT
+  function decodeJwt(token) {
+    try {
+      const parts = token.split(".");
+      if (parts.length !== 3) {
+        throw new Error("Invalid JWT format");
+      }
+
+      const payload = atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"));
+      return JSON.parse(payload);
+    } catch (error) {
+      console.error("JWT decoding error:", error);
+      return null;
+    }
+  }
 
   return (
     <KeyboardAvoidingView

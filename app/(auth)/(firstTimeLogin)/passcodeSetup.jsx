@@ -6,6 +6,7 @@ import { colors } from "../../../constants/Colors";
 import * as Haptics from "expo-haptics";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useToast } from "../../../utils/Toast/ToastContext";
+import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
 
 export default function PasscodeSetup() {
@@ -146,10 +147,13 @@ export default function PasscodeSetup() {
         <TouchableOpacity
           key={index}
           style={styles.number}
-          onPress={() => {
+          onPress={async () => {
             if (number === "←") {
               handleBackspacePress();
             } else if (number === "✓") {
+              //API Call( pending)
+              console.log("result");
+              await SecureStore.setItemAsync("mpin", pin);
               router.push("/fingerprintSetup");
             } else if (number !== "") {
               handleNumberPress(number);

@@ -9,6 +9,7 @@ import {
   authenticateWithFingerprint,
 } from "../../../services/redux/features/fingerprintAuth-slice"; // Adjust the path if needed
 import { useRouter } from "expo-router";
+import { updateSignInStatus } from "../../../services/redux/features/auth-slice";
 
 export default function FingerprintSetup() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function FingerprintSetup() {
     if (success) {
       console.log(isFingerprintAuthEnabled, "isFingerprintAuthEnabled");
       console.log("Fingerprint authentication successful!");
+      dispatch(updateSignInStatus(true));
       router.replace("/(dashboard)");
       // Navigate to the next screen or perform other actions
     } else {

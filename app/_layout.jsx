@@ -8,10 +8,12 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { Provider } from "react-redux";
-import { store } from "../services/redux/store";
+import { Provider, useDispatch } from "react-redux";
+import { store, initializeTokenRefresh } from "../services/redux/store";
 import { PaperProvider } from "react-native-paper";
 import Toast, { ToastProvider } from "../utils/Toast/ToastContext";
+import { setupTokenRefreshTimer } from "../services/tokenManager";
+import { rehydrateAuth } from "../services/redux/rehydrateAuth";
 
 import "react-native-reanimated";
 
@@ -22,6 +24,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     MontserratRegular: require("../assets/fonts/Montserrat-Regular.ttf"),
@@ -47,6 +50,15 @@ export default function RootLayout() {
 
   // // Making showToast globally available (optional, but often helpful)
   // global.showToast = showToast;
+
+  useEffect(() => {
+    const cleanupTokenRefresh = initializeTokenRefresh();
+    rehydrateAuth(dispatch); // 👈 rehydrate here
+
+    return () => {
+      cleanupTokenRefresh(); // Clean up on unmount
+    };
+  }, []);
 
   useEffect(() => {
     if (loaded) {
