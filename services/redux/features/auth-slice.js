@@ -12,13 +12,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     signIn: (state, action) => {
-      console.log(
-        state,
-        "state",
-        typeof action.payload,
-        action.payload,
-        "action.payload"
-      );
       const { jwtToken, decodedJwtToken } = action.payload;
 
       state.isSignIn = true;
@@ -26,16 +19,17 @@ const authSlice = createSlice({
       state.decodedJwtToken = decodedJwtToken;
 
       // Store token securely
-      SecureStore.setItemAsync("encryptedToken", String(jwtToken)).catch(
-        (error) =>
-          console.error("SecureStore Error storing encryptedToken:", error)
-      );
-      SecureStore.setItemAsync(
-        "decodedToken",
-        JSON.stringify(decodedJwtToken)
-      ).catch((error) =>
-        console.error("SecureStore Error storing decodedToken:", error)
-      );
+      SecureStore.setItemAsync("encryptedToken", String(jwtToken))
+        .then(() => console.log("✅ encryptedToken stored successfully"))
+        .catch((error) =>
+          console.error("❌ SecureStore Error storing encryptedToken:", error)
+        );
+
+      SecureStore.setItemAsync("decodedToken", JSON.stringify(decodedJwtToken))
+        .then(() => console.log("✅ decodedToken stored successfully"))
+        .catch((error) =>
+          console.error("❌ SecureStore Error storing decodedToken:", error)
+        );
     },
     signOut: (state) => {
       state.isSignIn = false;
