@@ -48,7 +48,9 @@ export const setupTokenRefresh = (store) => {
   // Function to check token and refresh if needed
   const checkAndRefreshTokenIfNeeded = async () => {
     try {
-      const decodedTokenString = await SecureStore.getItemAsync("decodedToken");
+      const decodedTokenString = await SecureStore.getItemAsync(
+        "decodedJwtToken"
+      );
       const decodedToken = decodedTokenString
         ? JSON.parse(decodedTokenString)
         : null;

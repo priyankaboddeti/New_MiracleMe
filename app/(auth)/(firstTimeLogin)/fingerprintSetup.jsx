@@ -76,7 +76,7 @@ export default function FingerprintSetup() {
       <View style={styles.fingerprintImageSection}>
         <TouchableOpacity
           style={styles.fingerprintButton}
-          onPress={handleAuthenticate} // Directly trigger authentication on icon press
+          onPress={() => handleAuthenticate()} // Directly trigger authentication on icon press
         >
           <Image
             style={styles.fingerprintIcon}
@@ -88,7 +88,7 @@ export default function FingerprintSetup() {
       {/* Buttons */}
       <View style={styles.buttonSection}>
         <TouchableOpacity
-          onPress={handleAuthenticate}
+          onPress={() => handleAuthenticate()}
           style={styles.proceedButton}
         >
           <Text style={styles.proceedButtonText}>Proceed</Text>

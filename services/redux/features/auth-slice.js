@@ -18,6 +18,8 @@ const authSlice = createSlice({
       state.jwtToken = jwtToken;
       state.decodedJwtToken = decodedJwtToken;
 
+      // Store the isSignIn value in secure storage
+      SecureStore.setItemAsync("isSignIn", "true");
       // Store token securely
       SecureStore.setItemAsync("encryptedToken", String(jwtToken))
         .then(() => console.log("✅ encryptedToken stored successfully"))
@@ -39,6 +41,7 @@ const authSlice = createSlice({
       // 🔹 Remove all data
       console.log("🔑 Clearing all secure auth-related data from SecureStore");
       const secureKeys = [
+        "isSignIn",
         "encryptedToken",
         "decodedToken",
         "mpin",

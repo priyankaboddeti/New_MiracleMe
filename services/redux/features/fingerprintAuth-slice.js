@@ -45,7 +45,9 @@ export const checkFingerprintAvailability = () => async (dispatch) => {
 export const authenticateWithFingerprint = () => async (dispatch) => {
   try {
     const result = await LocalAuthentication.authenticateAsync();
+    console.log(result, "result");
     if (result.success) {
+      console.log(result, "result");
       dispatch(setFingerprintAuthEnabled(true));
       return true; // Authentication successful
     } else {

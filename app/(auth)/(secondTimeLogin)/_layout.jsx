@@ -1,14 +1,12 @@
 import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function AuthLayout() {
   const router = useRouter();
-
-  useEffect(() => {
-    // Ensure we navigate to passcodeLogin when this layout mounts
-    router.replace("/(auth)/(secondTimeLogin)/passcodeLogin");
-  }, []);
-
+  const { isFingerprintAuthEnabled } = useSelector(
+    (state) => state.fingerprintAuth
+  );
   return (
     <Stack
       screenOptions={{
@@ -21,8 +19,14 @@ export default function AuthLayout() {
         },
       }}
     >
-      <Stack.Screen name="passcodeLogin" options={{ headerShown: false }} />
-      <Stack.Screen name="fingerprintLogin" options={{ headerShown: false }} />
+      {isFingerprintAuthEnabled ? (
+        <Stack.Screen
+          name="fingerprintLogin"
+          options={{ headerShown: false }}
+        />
+      ) : (
+        <Stack.Screen name="passcodeLogin" options={{ headerShown: false }} />
+      )}
     </Stack>
   );
 }

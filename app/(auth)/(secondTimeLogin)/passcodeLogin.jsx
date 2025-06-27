@@ -8,6 +8,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "../../../constants/Colors";
 import { signOut } from "../../../services/redux/features/auth-slice";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 
 export default function passcodeLogin() {
   const dispatch = useDispatch();

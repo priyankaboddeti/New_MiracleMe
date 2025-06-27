@@ -46,15 +46,15 @@ export default function RootLayout() {
     <Provider store={store}>
       <PaperProvider>
         <SafeAreaProvider>
-          <SafeAreaView
+          {/* <SafeAreaView
             style={{ flex: 1, backgroundColor: "#fff" }}
             edges={["left", "right", "top", "bottom"]}
-          >
-            <ToastProvider>
-              <AppContent />
-              <StatusBar style="auto" />
-            </ToastProvider>
-          </SafeAreaView>
+          > */}
+          <ToastProvider>
+            <AppContent />
+            <StatusBar style="auto" translucent={false} />
+          </ToastProvider>
+          {/* </SafeAreaView> */}
         </SafeAreaProvider>
       </PaperProvider>
     </Provider>
@@ -79,11 +79,8 @@ function AppContent() {
 
   return (
     <Stack>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      {/* <Stack.Screen
-        name="(dashboard)"
-        options={{ headerShown: false }}
-      /> */}
+      {/* <Stack.Screen name="(auth)" options={{ headerShown: false }} /> */}
+      <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
       {/* <Stack.Screen name="+not-found" /> */}
     </Stack>
   );

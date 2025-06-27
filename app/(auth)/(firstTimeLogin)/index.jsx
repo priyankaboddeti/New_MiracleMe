@@ -7,7 +7,6 @@ import {
   Text,
   Alert,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Buildings from "../../../assets/images/Buildings";
 import MiracleLogo from "../../../assets/images/MiracleLogo";
 import InputField from "../../../components/InputField";

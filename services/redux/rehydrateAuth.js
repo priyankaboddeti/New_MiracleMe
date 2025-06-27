@@ -5,7 +5,9 @@ export const rehydrateAuth = () => async (dispatch) => {
   try {
     console.log("🔄 Starting auth rehydration...");
     const jwtToken = await SecureStore.getItemAsync("encryptedToken");
-    const decodedTokenString = await SecureStore.getItemAsync("decodedToken");
+    const decodedTokenString = await SecureStore.getItemAsync(
+      "decodedJwtToken"
+    );
 
     console.log("📦 Retrieved tokens:", {
       jwtToken: jwtToken ? "exists" : "missing",
